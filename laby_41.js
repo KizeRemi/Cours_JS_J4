@@ -96,7 +96,7 @@ Graph.prototype.getPath = function (origin, target) {
 }
 
 var g = new Graph(MATRIX, COLUMN_NAMES)
-// console.log('Graph#getPath:', g.getPath('C', 'I'))
+console.log(g)
 
 function getNullMatrix (width, height) {
   var matrix = []
@@ -178,7 +178,6 @@ LabyrintheHTMLView.prototype.draw = function () {
   var indent = '   '
   var labyHTML = '<table class="labyrinthe">\n'
   var cell = 0
-
   console.log(laby)
   for (var i = 0; i < laby.width; i++) {
     labyHTML += indent + '<tr>\n'
@@ -210,12 +209,12 @@ var labyhtml = view.draw()
 console.log(labyhtml)
 
 // Pour afficher le labyrinthe, il faut décommenter le code suivant et lancer laby.html
-/*
-document.body.innerHTML += labyhtml
 
+document.body.innerHTML += labyhtml
 var resolveButton = document.getElementById('resolve')
 resolveButton.addEventListener('click', resolve, false)
 function resolve () {
+  // Pour avoir la solution du labyrinthe, on ajoute la classe resolve a chaque case faisant partie du getPath()
   var path = labyrinthe.getPath('A1', 'C3')
   var elems = document.getElementsByTagName('td')
   for (var i = 0; i < elems.length; i++) {
@@ -224,4 +223,33 @@ function resolve () {
     }
   }
 }
+
+// Début de la fonction randomize mais trop de problème au niveau des index, ni de l'algo (nombre de porte ouvertes max, etc)
+/*
+Labyrinthe.prototype.randomize = function (v1, v2) {
+  for (var i = 0; i < 30; i++) {
+    var direction = 'right'
+    var randomCell = 0
+
+    while(randomCell === 0) {
+      randomCell = Math.floor(Math.random() * 20)
+    }
+    console.log(randomCell)
+    var randomDirection = Math.floor(Math.random() * 2)
+    if (randomDirection === 0) {
+      direction = 'right'
+    } else {
+      direction = 'bottom'
+    }
+    this.cellOpen(this.cells[randomCell], direction)
+  }
+}
+var labyrinthe_random = new Labyrinthe(5, 5)
+labyrinthe_random.randomize('A1', 'E5')
+
+var view2 = new LabyrintheHTMLView(labyrinthe_random)
+var labyhtml2 = view2.draw()
+console.log(labyhtml2)
+
+document.body.innerHTML += labyhtml2
 */
