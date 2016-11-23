@@ -223,7 +223,7 @@ function resolve () {
   }
 }
 
-// Début de la fonction randomize mais trop de problème au niveau des index, ni de l'algo (nombre de porte ouvertes max, etc)
+// Début de la fonction randomize mais trop de problème au niveau des index, ainsi que de l'algo (nombre de porte ouvertes max, etc)
 /*
 Labyrinthe.prototype.randomize = function (v1, v2) {
   for (var i = 0; i < 30; i++) {
