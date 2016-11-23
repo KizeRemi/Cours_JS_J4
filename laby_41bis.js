@@ -84,7 +84,7 @@ function getPath (target, origin, matrix, columnNames, path) {
 }
 
 // console.log(getPath('K', 'A', MATRIX, COLUMN_NAMES, 'A'))
-//console.log('getPath:', getPath('I', 'C', MATRIX, COLUMN_NAMES, ['C']))
+// console.log('getPath:', getPath('I', 'C', MATRIX, COLUMN_NAMES, ['C']))
 
 function Graph (matrix, vertexNames) {
   this.matrix = matrix
@@ -96,7 +96,7 @@ Graph.prototype.getPath = function (origin, target) {
 }
 
 var g = new Graph(MATRIX, COLUMN_NAMES)
-//console.log('Graph#getPath:', g.getPath('C', 'I'))
+// console.log('Graph#getPath:', g.getPath('C', 'I'))
 
 function getNullMatrix (width, height) {
   var matrix = []
@@ -110,7 +110,7 @@ function getNullMatrix (width, height) {
   return matrix
 }
 
-//console.log('getNullMatrix:', getNullMatrix(3, 2))
+// console.log('getNullMatrix:', getNullMatrix(3, 2))
 
 function Labyrinthe (width, height) {
   this.width = width
@@ -132,23 +132,25 @@ Labyrinthe.prototype.cellList = function () {
 }
 
 var labyrinthe = new Labyrinthe(3, 3)
-console.log('Labyrinthe#cellList:', labyrinthe.cellList())
+// console.log('Labyrinthe#cellList:', labyrinthe.cellList())
+// console.log(labyrinthe.matrix)
 
 Labyrinthe.prototype.cellIndex = function (cellName) {
   return this.cells.indexOf(cellName)
 }
 
-//console.log('Labyrinthe#cellIndex:', labyrinthe.cellIndex('A1'))
+// console.log('Labyrinthe#cellIndex:', labyrinthe.cellIndex('A1'))
 
 Labyrinthe.prototype.cellOpen = function (cellName, direction) {
   var index = this.cellIndex(cellName)
-  console.log(index)
+  // il faut bien spécifier la direction inverse. EX: Si A1 vers A2 alors A2 vers A1
   if (direction === 'right') {
     this.matrix[index][index + 1] = 1
-    this.matrix[index][index + 1] = 1
+    this.matrix[index + 1][index] = 1
   }
   if (direction === 'bottom') {
     this.matrix[index][index + this.width] = 1
+    this.matrix[index + this.width][index] = 1
   }
 }
 
@@ -161,22 +163,65 @@ labyrinthe.cellOpen('B2', 'bottom') // vers B3
 labyrinthe.cellOpen('B2', 'right')  // vers C2
 labyrinthe.cellOpen('C2', 'bottom') // vers C3
 labyrinthe.cellOpen('A3', 'right')  // vers B3
-console.log(labyrinthe.matrix)
 
 Labyrinthe.prototype.getPath = function (origin, target) {
   return getPath(target, origin, this.matrix, this.cells, [origin])
 }
-console.log('Labyrinthe#getPath:', labyrinthe.getPath('A1', 'C1'))
+// console.log('Labyrinthe#getPath:', labyrinthe.getPath('A1', 'C3'))
 
 function LabyrintheHTMLView (labyrinthe) {
   this.labyrinthe = labyrinthe
 }
 
 LabyrintheHTMLView.prototype.draw = function () {
-  // A FAIRE: BONUS (optionnel) - Dessiner le labyrinthe
-  // retourne la fonction une chaine de caractères représentant du type:
-  //   '<table class="labyrinthe">...</table>'
+  var laby = this.labyrinthe
+  var indent = '   '
+  var labyHTML = '<table class="labyrinthe">\n'
+  var cell = 0
+
+  console.log(laby)
+  for (var i = 0; i < laby.width; i++) {
+    labyHTML += indent + '<tr>\n'
+    for (var j = 0; j < laby.height; j++) {
+      var className = ''
+      if (laby.matrix[cell][cell + 1] === 1) {
+        className += ' door-right'
+      }
+      if (cell !== 0 && laby.matrix[cell - 1][cell] === 1) {
+        className += ' door-left'
+      }
+      if (laby.matrix[cell][cell + laby.width] === 1) {
+        className += ' door-bottom'
+      }
+      if (cell >= laby.width && laby.matrix[cell - laby.width][cell] === 1) {
+        className += ' door-top'
+      }
+      labyHTML += indent.repeat(2) + '<td data-cell="' + laby.cells[cell] + '" class="' + className + '">' + laby.cells[cell] + '</td>\n'
+      cell++
+    }
+    labyHTML += indent + '</tr>\n'
+  }
+  labyHTML += '</table>\n'
+  return labyHTML
 }
 
 var view = new LabyrintheHTMLView(labyrinthe)
-console.log('LabyrintheHTMLView#draw', view.draw())
+var labyhtml = view.draw()
+console.log(labyhtml)
+
+// Pour afficher le labyrinthe, il faut décommenter le code suivant et lancer laby.html
+/*
+document.body.innerHTML += labyhtml
+
+var resolveButton = document.getElementById('resolve')
+resolveButton.addEventListener('click', resolve, false)
+function resolve () {
+  var path = labyrinthe.getPath('A1', 'C3')
+  var elems = document.getElementsByTagName('td')
+  for (var i = 0; i < elems.length; i++) {
+    if (path.includes(elems[i].dataset.cell)) {
+      elems[i].classList.add('resolve')
+    }
+  }
+}
+*/
