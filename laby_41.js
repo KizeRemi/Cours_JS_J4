@@ -208,8 +208,7 @@ var view = new LabyrintheHTMLView(labyrinthe)
 var labyhtml = view.draw()
 console.log(labyhtml)
 
-// Pour afficher le labyrinthe, il faut décommenter le code suivant et lancer laby.html
-
+// Il faut commenter ici si vous ne voulez pas la partie visuelle. Donc uniquement dans la console.
 document.body.innerHTML += labyhtml
 var resolveButton = document.getElementById('resolve')
 resolveButton.addEventListener('click', resolve, false)
